@@ -49,7 +49,29 @@ export const XmtpProvider: React.FC = ({ children }) => {
   useEffect(() => {
     const initClient = async () => {
       if (!wallet) return
-      setClient(await Client.create(wallet, { env: getEnv() }))
+
+      let keys = await localStorage.getItem('xmtpKeys')
+      try {
+        // Create the client with an `ethers.Signer` from your application
+        if (!keys) {
+          keys = await Client.getKeys(wallet)
+          const keysToString = Array.from // if available
+            ? Array.from(keys) // use Array#from
+            : [].map.call(keys, (v) => v) // otherwise map()
+          await localStorage.setItem('xmtpKeys', JSON.stringify(keysToString))
+        } else {
+          keys = new Uint8Array(JSON.parse(keys))
+        }
+      } catch (err) {
+        console.log(`====> err :`, err)
+      }
+
+      const client = await Client.create(null, {
+        privateKeyOverride: keys,
+        env: getEnv(),
+      })
+
+      setClient(client)
     }
     initClient()
   }, [wallet])
