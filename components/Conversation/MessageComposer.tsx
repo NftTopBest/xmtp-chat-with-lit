@@ -11,6 +11,7 @@ type MessageComposerProps = {
 
 const MessageComposer = ({ onSend }: MessageComposerProps): JSX.Element => {
   const [message, setMessage] = useState('')
+  const [showUploadModal, setShowUploadModal] = useState(true)
   const router = useRouter()
 
   useEffect(() => setMessage(''), [router.query.recipientWalletAddr])
@@ -19,6 +20,12 @@ const MessageComposer = ({ onSend }: MessageComposerProps): JSX.Element => {
     (e: React.FormEvent<HTMLInputElement>) => setMessage(e.currentTarget.value),
     []
   )
+
+  const setupUploadModal = async (e) => {
+    e.preventDefault()
+    setShowUploadModal(true)
+    console.log('hehe')
+  }
 
   const onSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
@@ -79,6 +86,12 @@ const MessageComposer = ({ onSend }: MessageComposerProps): JSX.Element => {
             height={32}
             width={32}
           />
+        </button>
+        <button
+          className={messageComposerStyles.upload}
+          onClick={setupUploadModal}
+        >
+          <img src="/upload-pink.png" alt="add File" height={32} width={32} />
         </button>
       </form>
     </div>
