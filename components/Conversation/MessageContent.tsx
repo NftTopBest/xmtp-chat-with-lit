@@ -8,6 +8,8 @@ type MessageContentProps = {
   content: string
 }
 
+type EncrytpedDataJsonType = {}
+
 const MessageContent = ({ content }: MessageContentProps): JSX.Element => {
   const { isConnected, decryptFile } = useLit()
   const { getJson } = useNFTStorage()
@@ -17,7 +19,7 @@ const MessageContent = ({ content }: MessageContentProps): JSX.Element => {
   const [isUnlocked, setIsUnlocked] = useState(false)
   const [contractAddress, setContractAddress] = useState('')
   const [imageContent, setImageContent] = useState('')
-  const [data, setData] = useState(false)
+  const [data, setData] = useState<EncrytpedDataJsonType>({})
 
   const unlockContent = async () => {
     setIsUnLocking(true)

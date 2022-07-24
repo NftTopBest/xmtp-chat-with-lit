@@ -22,7 +22,9 @@ const MessageComposer = ({ onSend }: MessageComposerProps): JSX.Element => {
     []
   )
 
-  const setupUploadModal = async (e) => {
+  const setupUploadModal = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     e.preventDefault()
     setShowUploadModal(true)
   }
