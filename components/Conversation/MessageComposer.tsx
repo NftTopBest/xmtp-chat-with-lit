@@ -4,6 +4,7 @@ import messageComposerStyles from '../../styles/MessageComposer.module.css'
 import upArrowGreen from '../../public/up-arrow-green.svg'
 import upArrowGrey from '../../public/up-arrow-grey.svg'
 import { useRouter } from 'next/router'
+import TokenGatingModal from './TokenGatingModal'
 
 type MessageComposerProps = {
   onSend: (msg: string) => Promise<void>
@@ -11,6 +12,7 @@ type MessageComposerProps = {
 
 const MessageComposer = ({ onSend }: MessageComposerProps): JSX.Element => {
   const [message, setMessage] = useState('')
+  const [showUploadModal, setShowUploadModal] = useState(false)
   const router = useRouter()
 
   useEffect(() => setMessage(''), [router.query.recipientWalletAddr])
@@ -19,6 +21,13 @@ const MessageComposer = ({ onSend }: MessageComposerProps): JSX.Element => {
     (e: React.FormEvent<HTMLInputElement>) => setMessage(e.currentTarget.value),
     []
   )
+
+  const setupUploadModal = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.preventDefault()
+    setShowUploadModal(true)
+  }
 
   const onSubmit = useCallback(
     async (e: React.FormEvent<HTMLFormElement>) => {
@@ -80,7 +89,18 @@ const MessageComposer = ({ onSend }: MessageComposerProps): JSX.Element => {
             width={32}
           />
         </button>
+        <button
+          className={messageComposerStyles.upload}
+          onClick={setupUploadModal}
+        >
+          <img src="/upload-pink.png" alt="add File" height={32} width={32} />
+        </button>
       </form>
+      <TokenGatingModal
+        isOpen={showUploadModal}
+        onSend={onSend}
+        onClose={() => setShowUploadModal(false)}
+      />
     </div>
   )
 }
