@@ -15,7 +15,7 @@ const TokenGatingModal = ({ isOpen, onClose, onSend }) => {
   const [isPublic, setIsPublic] = useState(true)
   const [imgPreview, setImgPreview] = useState('')
   const [contractAddress, setContractAddress] = useState(
-    '0xf220db48f0d3ca8a9833e0353e7497dbceae7ac6'
+    '0x83b06d09b99ad2641dd9b1132e8ce8809b623433'
   )
 
   const [isLoading, setIsLoading] = useState(false)
@@ -82,13 +82,10 @@ const TokenGatingModal = ({ isOpen, onClose, onSend }) => {
     }
 
     const metadataCID = await storeJson(metadata)
-    console.log(metadataCID)
     const rz = await onSend(metadataCID)
-    console.log('rz', rz)
     onClose()
     setIsLoading(false)
     setImgPreview('')
-    console.log(metadataCID)
   }
 
   const uploadText = (

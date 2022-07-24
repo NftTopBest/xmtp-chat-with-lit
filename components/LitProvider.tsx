@@ -27,10 +27,10 @@ export const LitProvider: React.FC = ({ children }) => {
       document.removeEventListener('lit-ready', updateLitConnectStatus)
     }
   }, [wallet])
+  const chain = 'mumbai'
 
   const encryptFile = useCallback(
     async (file, accessControlConditions) => {
-      const chain = 'mumbai'
       const authSig = await LitJsSdk.checkAndSignAuthMessage({
         chain,
       })
@@ -56,19 +56,41 @@ export const LitProvider: React.FC = ({ children }) => {
     [client]
   )
 
+  const decryptFile = useCallback(
+    async (encryptedSymmetricKey, file, accessControlConditions) => {
+      const authSig = await LitJsSdk.checkAndSignAuthMessage({ chain })
+      const symmetricKey = await client.getEncryptionKey({
+        accessControlConditions,
+        toDecrypt: encryptedSymmetricKey,
+        chain,
+        authSig,
+      })
+
+      const decryptedFile = await LitJsSdk.decryptFile({
+        file,
+        symmetricKey,
+      })
+
+      return decryptedFile
+    },
+    [client]
+  )
+
   // providerState
   const [providerState, setProviderState] = useState<LitContextType>({
     client,
     isConnected,
     encryptFile,
+    decryptFile,
   })
   useEffect(() => {
     setProviderState({
       client,
       isConnected,
       encryptFile,
+      decryptFile,
     })
-  }, [client, isConnected, encryptFile])
+  }, [client, isConnected, encryptFile, decryptFile])
   return (
     <LitContext.Provider value={providerState}>{children}</LitContext.Provider>
   )

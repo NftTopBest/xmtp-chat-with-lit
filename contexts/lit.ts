@@ -12,12 +12,17 @@ export type LitContextType = {
     file: Blob,
     accessControlConditions: Array<Object>
   ) => Promise<encryptFileResult | undefined>
+  decryptFile: (
+    file: Blob,
+    accessControlConditions: Array<Object>
+  ) => Promise<ArrayBuffer | undefined>
 }
 
 export const LitContext = createContext<LitContextType>({
   client: undefined,
   isConnected: false,
   encryptFile: async () => undefined,
+  decryptFile: async () => undefined,
 })
 
 export const useLit = (): LitContextType => {
