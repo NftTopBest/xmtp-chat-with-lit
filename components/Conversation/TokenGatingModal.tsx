@@ -6,9 +6,6 @@ import { Dialog, Switch } from '@headlessui/react'
 
 const TokenGatingModal = ({ isOpen, onClose, onSend }) => {
   const { isConnected, encryptFile } = useLit()
-  if (!isConnected) {
-    return <div>Lit is Loading...</div>
-  }
 
   const [title, setTitle] = useState('title')
   const [description, setDescription] = useState('description')
@@ -115,6 +112,10 @@ const TokenGatingModal = ({ isOpen, onClose, onSend }) => {
       <p className="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
     </div>
   )
+
+  if (!isConnected) {
+    return <div>Lit is Loading...</div>
+  }
 
   return (
     <Dialog open={isOpen} onClose={() => onClose()}>

@@ -13,6 +13,7 @@ export type LitContextType = {
     accessControlConditions: Array<Object>
   ) => Promise<encryptFileResult | undefined>
   decryptFile: (
+    encryptedSymmetricKey: string,
     file: Blob,
     accessControlConditions: Array<Object>
   ) => Promise<ArrayBuffer | undefined>

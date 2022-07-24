@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useCallback, useEffect, useState } from 'react'
 import { classNames } from '../../helpers'
 import Loader from '../Loader'
@@ -8,10 +9,14 @@ type MessageContentProps = {
   content: string
 }
 
-type EncrytpedDataJsonType = {}
+type EncryptedJsonMetaType = {
+  encryptedFileCID: string
+  encryptedSymmetricKey: string
+  condition: []
+}
 
 const MessageContent = ({ content }: MessageContentProps): JSX.Element => {
-  const { isConnected, decryptFile } = useLit()
+  const { decryptFile } = useLit()
   const { getJson } = useNFTStorage()
   const [isLoading, setIsLoading] = useState(true)
   const [unlockError, setUnlockError] = useState('')
@@ -19,15 +24,17 @@ const MessageContent = ({ content }: MessageContentProps): JSX.Element => {
   const [isUnlocked, setIsUnlocked] = useState(false)
   const [contractAddress, setContractAddress] = useState('')
   const [imageContent, setImageContent] = useState('')
-  const [data, setData] = useState<EncrytpedDataJsonType>({})
+  const [data, setData] = useState<EncryptedJsonMetaType | undefined>(undefined)
 
   const unlockContent = async () => {
+    if (!data) return
+
     setIsUnLocking(true)
     const cid = data.encryptedFileCID
     const url = `${cid.replace('ipfs://', 'https://')}.ipfs.nftstorage.link/`
     const response = await fetch(url)
     const blob = await response.blob()
-    let decryptedFile = ''
+    let decryptedFile: ArrayBuffer | undefined = undefined
     try {
       setUnlockError('')
       decryptedFile = await decryptFile(
@@ -35,9 +42,8 @@ const MessageContent = ({ content }: MessageContentProps): JSX.Element => {
         blob,
         data.condition
       )
-      console.log('decryptedFile', decryptedFile)
     } catch (err) {
-      setUnlockError(err.message)
+      setUnlockError(err?.message)
       setIsUnLocking(false)
       return
     }
@@ -57,7 +63,6 @@ const MessageContent = ({ content }: MessageContentProps): JSX.Element => {
     const loadJson = async () => {
       const jsonData = await getJson(content)
       setData(jsonData)
-      console.log(jsonData)
       setContractAddress(jsonData.condition[0].contractAddress)
 
       setIsLoading(false)
