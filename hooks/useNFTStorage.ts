@@ -12,9 +12,7 @@ const useNFTStorage = () => {
       const { cid } = await NFTStorage.encodeBlob(file)
       const isExist = await client.check(cid)
       if (isExist) {
-        return {
-          cid: `ipfs://${cid}`,
-        }
+        return `ipfs://${cid}`
       }
     } catch (err) {
       // nothing todo, as the file just do not store yet
@@ -23,6 +21,9 @@ const useNFTStorage = () => {
   }
 
   const storeBlob = async (file) => {
+    const isExist = await checkExist(file)
+    if (isExist) return isExist
+
     const cid = await client.storeBlob(file)
     return `ipfs://${cid}`
   }
@@ -33,7 +34,6 @@ const useNFTStorage = () => {
   }
 
   const storeJson = async (data) => {
-    data = unref(data)
     const blob = new Blob([JSON.stringify(data)], {
       type: 'application/json',
     })
